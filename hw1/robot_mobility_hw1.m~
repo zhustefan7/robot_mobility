@@ -84,15 +84,40 @@ sys = ss(A2,B2,C,D);
 
 %% 5.2
 desired_ang = atan2(5,90);
-time1 = linspace(0,7,700);
-si_dot1=desired_ang/100*ones(100,1);
-si_dot2 =zeros(500,1);
-si_dot3=-desired_ang/100*ones(100,1);
-si_dot = vertcat(si_dot1, si_dot2, si_dot3);
+time1 = linspace(0,5,500);
+si_dot1=desired_ang/2*ones(2,1);
+si_dot2 =zeros(300,1);
+si_dot3=-desired_ang/2*ones(2,1);
+si_dot4=zeros(33,1);
+si_dot5 = zeros(163,1)
+si_dot = vertcat(si_dot1, si_dot2, si_dot3,si_dot4,si_dot5);
 
-lsim(sys,si_dot,time1)
-plot(time2, x(:,1));hold on;
-plot(time2, x(:,3)); 
+[y,t,x]=lsim(sys,si_dot,time1)
+plot(time1, x(:,1));hold on;
+plot(time1, x(:,3)); 
+xlabel('time[s]')
+ylabel('error')
+
+
+%% 5.3
+
+si = cumtrapz(time1,si_dot);
+% new_si= si(1:337,:);
+x_dot = Vx.*cos(si);
+y_dot = Vx.*sin(si);
+desired_x = cumtrapz(time1,x_dot);
+desired_y =cumtrapz(time1,y_dot);
+figure();
+% plot(time1,desired_x);
+% plot(desired_x,desired_y);
+plot(desired_traj)
+title('Desired Path')
+
+
+% actual_x = desired_x + x(:,1)
+% figure();
+% plot(time1,actual_x);
+% title('Actual Path');
 
 
 
