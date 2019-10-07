@@ -26,15 +26,67 @@ end
 
 %% Q4.4
 x0 = [0;0;0]
-time = [0:0.01:200];
+time = [0:0.01:20];
 global v lf lr df;
 v = 20;
 lf = 1.5;
 lr = 1.5;
-% df = square(;
-[t,xt] = ode45(@pepy_ss,time,x0);
+
+%% Part A
+df_consts=[1,1.2,1.3,1.4,1.5,1.6];
 figure();
-plot(xt(:,1) , xt(:,2))
+for i=1:size(df_consts,2)
+    df = df_consts(i);
+    [t,xt] = ode45(@pepy_ss,time,x0);
+    plot(xt(:,1) , xt(:,2));hold on;
+    xlabel('x[m]');
+    ylabel('y[m]');
+    legend('df = 1','df = 1.2','df = 1.3','df = 1.4','df = 1.5','df = 1.6' )
+end
+
+%% Part B
+%different amp 
+amps=[0.05,0.06,0.07,0.08,0.09];
+figure();
+for i=1:size(amps,2)
+    amp = amps(i);
+    global amp;
+    [t,xt] = ode45(@pepy_ss,time,x0);
+    plot(xt(:,1) , xt(:,2));hold on;
+    xlabel('x[m]');
+    ylabel('y[m]');
+    legend('amplitude = 0.05','amplitude = 0.06','amplitude = 0.07','amplitude = 0.08','amplitude = 0.09' )
+end
+
+vs=[30,35,40,45,50];
+figure();
+for i=1:size(vs,2)
+    v=vs(i);
+    amp = amps(5);
+%     amp = amps(i);
+%     global amp;
+%     df = amp(i)*square(1/20*2*pi*t);
+    [t,xt] = ode45(@pepy_ss,time,x0);
+    plot(xt(:,1) , xt(:,2));hold on;
+    xlabel('x[m]');
+    ylabel('y[m]');
+    legend('vx = 30','vx = 35','vx = 40','vx = 45','vx = 50' )
+end
+
+
+%% Part C 
+amps=[0.05,0.06,0.07,0.08,0.09];
+figure();
+v=30;
+for i=1:size(amps,2)
+    amp = amps(i);
+    global amp;
+    [t,xt] = ode45(@pepy_ss,time,x0);
+    plot(xt(:,1) , xt(:,2));hold on;
+    xlabel('x[m]');
+    ylabel('y[m]');
+    legend('amplitude = 0.05','amplitude = 0.06','amplitude = 0.07','amplitude = 0.08','amplitude = 0.09' )
+end
 
 
 
@@ -97,19 +149,34 @@ plot(time1, x(:,1));hold on;
 plot(time1, x(:,3)); 
 xlabel('time[s]')
 ylabel('error')
+legend('e1','e2')
 
 
 %% 5.3
+si1 = [desired_ang/2,desired_ang]'
+si2 = desired_ang * ones(300,1);
+si3 = [desired_ang/2,0]'
+si4 = zeros(33,1);
+si= vertcat(si1 , si2, si3, si4)
+si_actual= si+x(1:337,3)
 
-si = cumtrapz(time1(:,1:337),si_dot(1:337,:));
+% si = cumtrapz(time1(:,1:337),si_dot(1:337,:));
 % new_si= si(1:337,:);
 x_dot = Vx*cos(si);
 y_dot = Vx*sin(si);
 desired_x = cumtrapz(time1(:,1:337),x_dot);
 desired_y =cumtrapz(time1(:,1:337),y_dot);
 figure();
-% % plot(time1,desired_x);
-plot(desired_x,desired_y);
+plot(desired_x,desired_y);hold on;
+
+x_dot_actual = Vx*cos(si_actual);
+y_dot_actual = Vx*sin(si_actual);
+actual_x = cumtrapz(time1(:,1:337),x_dot_actual);
+actual_y =cumtrapz(time1(:,1:337),y_dot_actual);
+plot(actual_x, actual_y);
+legend('Desired Path', 'Actual Path')
+xlabel('x[m]')
+ylabel('y[m]')
 % plot(desired_traj)
 % title('Desired Path')
 
@@ -163,3 +230,37 @@ plot(actual_x,actual_y);
 title('Actual Path');
 xlabel('x[m]');
 ylabel('y[m]');
+
+%% 5.6
+R1 = 1000;
+R2=500;
+Vx_list = [30 , 60]
+figure()
+vx = Vx_list(1)
+si_dot_val1 = vx / R1; 
+si_dot_val2 = vx / R2; 
+time2 = linspace(0,12,1200);
+si_dot1=zeros(100,1);
+si_dot2 = si_dot_val1*ones(500,1);
+si_dot3=zeros(100,1);
+si_dot4=-si_dot_val2*ones(500,1);
+si_dot = vertcat(si_dot1, si_dot2, si_dot3, si_dot4);
+[y,t,x]=lsim(sys,si_dot,time2);
+plot(time2, x(:,1));hold on;
+plot(time2, x(:,3)); 
+
+vx = Vx_list(2)
+si_dot_val1 = vx / R1; 
+si_dot_val2 = vx / R2; 
+time2 = linspace(0,12,1200);
+si_dot1=zeros(100,1);
+si_dot2 = si_dot_val1*ones(500,1);
+si_dot3=zeros(100,1);
+si_dot4=-si_dot_val2*ones(500,1);
+si_dot = vertcat(si_dot1, si_dot2, si_dot3, si_dot4);
+[y,t,x]=lsim(sys,si_dot,time2);
+plot(time2, x(:,1),'+');
+plot(time2, x(:,3),'+'); 
+legend('e1(Vx = 30)','e2(Vx = 30)','e1(Vx = 60)','e2(Vx = 60)');
+xlabel('time[s]')
+ylabel('error')
