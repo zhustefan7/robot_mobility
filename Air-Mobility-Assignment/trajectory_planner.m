@@ -11,7 +11,7 @@ function trajectory_state = trajectory_planner(question, waypoints, max_iter, wa
 %   waypoint_times: Time we should be at each waypoint
 %
 %   time_step: Length of one time_step
-%
+% 
 % Output parameters
 %
 %   trajectory_sate: [15 x max_iter] output trajectory as a matrix of states:

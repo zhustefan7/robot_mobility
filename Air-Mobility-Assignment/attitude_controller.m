@@ -1,4 +1,4 @@
-function [M] = attitude_controller(state,desired_state,params,question)
+function [M] = attitude_controller(current_state,desired_state,params,question)
 
 % Input parameters
 % 
@@ -27,16 +27,26 @@ function [M] = attitude_controller(state,desired_state,params,question)
 %************  ATTITUDE CONTROLLER ************************
 
 % Example PD gains
-Kpphi = 190;
-Kdphi = 30;
+% Kpphi = 190;
+% Kdphi = 30;
+% 
+% Kptheta = 198;
+% Kdtheta = 30;
+% 
+% Kppsi = 80;
+% Kdpsi = 17.88;
 
-Kptheta = 198;
-Kdtheta = 30;
-
-Kppsi = 80;
-Kdpsi = 17.88;
+Kp = [190;198;80];
+Kd = [30;30;17.88];
 
 % Write code here
+R = current_state.rot
+R_d = desired_state.rot
+eR = R - R_d
+eW = current_state.omega- R'*R_d*desired_state.omega
+
+M = -Kp.*eR - Kd.*eW;
+
 
 end
 

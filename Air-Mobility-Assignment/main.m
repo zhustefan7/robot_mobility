@@ -48,6 +48,7 @@ time_final = 10;
 time_step = 0.005; % sec
 % 0.005 sec is a reasonable time step for this system
 
+
 time_vec = time_initial:time_step:time_final;
 max_iter = length(time_vec);
 

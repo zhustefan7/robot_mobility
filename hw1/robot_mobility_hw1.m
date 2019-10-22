@@ -75,7 +75,7 @@ end
 
 
 %% Part C 
-amps=[0.05,0.06,0.07,0.08,0.09];
+amps=[0.5,0.6,0.7,0.8,0.9];
 figure();
 v=30;
 for i=1:size(amps,2)
@@ -85,7 +85,7 @@ for i=1:size(amps,2)
     plot(xt(:,1) , xt(:,2));hold on;
     xlabel('x[m]');
     ylabel('y[m]');
-    legend('amplitude = 0.05','amplitude = 0.06','amplitude = 0.07','amplitude = 0.08','amplitude = 0.09' )
+    legend('amplitude = 0.5','amplitude = 0.6','amplitude = 0.7','amplitude = 0.8','amplitude = 0.9' )
 end
 
 
