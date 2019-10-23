@@ -18,13 +18,32 @@ function [waypoints, waypoint_times] = lookup_waypoints(question)
 
 %Sample waypoints for hover trajectory
 if question == 2
-%     waypoints = [0 0.1 0.2 0.3; 0 0 0 0; 0.5 0.5 0.5 0.5; 0 0 0 0];
-    waypoints = [0,0,0.1,0;
-                 0,0,0.2,0;
-                 0,0,0.3,0;
-                 0,0,0.5,0;]
+   waypoints = [0 0.1 0.2 0.3;
+                0 0 0 0;
+                0.5 0.5 0.5 0.5; 
+                0 0 0 0];
+%     waypoints = [0,0,0.1,0;
+%                  0,0,0.2,0;
+%                  0,0,0.3,0;
+%                  0,0,0.5,0;]
     waypoint_times = [0 2 4 6];
 
+elseif question ==3
+    point_num = 100;
+    x_waypoint = zeros(point_num,1);
+    y_waypoint = zeros(point_num,1);
+    z_waypoint = linspace(0,1,point_num)';
+    theta_waypoint = zeros(point_num,1);
+    
+    waypoints = [x_waypoint,y_waypoint,z_waypoint,theta_waypoint]';
+    waypoint_times = linspace(0,10,point_num);
+    
+   
+end
 end
 
-end
+
+% function [waypoints, waypoint_times] = generate_waypoints(start_pos,end_pos,end_time)
+% 
+% 
+% end

@@ -40,10 +40,10 @@ Kp = [190;198;80];
 Kd = [30;30;17.88];
 
 % Write code here
-R = current_state.rot
-R_d = desired_state.rot
-eR = R - R_d
-eW = current_state.omega- R'*R_d*desired_state.omega
+R = current_state.rot;
+R_d = desired_state.rot;
+eR = R - R_d;
+eW = current_state.omega- R'*R_d*desired_state.omega;
 
 M = -Kp.*eR - Kd.*eW;
 

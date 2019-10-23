@@ -48,11 +48,11 @@ Kp = [13;17;20];
 Kd = [6.6;6.6;9];
 
 % Write code here
-if question ==2
+% if question ==2
 pos_error = current_state.pos - desired_state.pos
 vel_error = current_state.vel - desired_state.vel
 
-e_ddot = Kp.*pos_error - Kd.*vel_error;
+e_ddot = -Kp.*pos_error - Kd.*vel_error;
 
 
 % ex_ddot = - Kp1*pos_error(1)-Kd1*vel_error(1);
@@ -60,8 +60,7 @@ e_ddot = Kp.*pos_error - Kd.*vel_error;
 % ez_ddot = -pos_error(3) - vel_error(3);
 % 
 
-
-F = m*(g+desired_state.acc(3) - Kp(3)*pos_error(3));
+F = m*(g+desired_state.acc(3) - Kp(3)*pos_error(3)-Kd(3)*vel_error(3));
 
 acc = desired_state.acc + e_ddot;
 
@@ -70,5 +69,5 @@ acc = desired_state.acc + e_ddot;
 %        desired_state.acc(2)+ey_ddot,
 %        desired_state.acc(3)+ez_ddot]
 
-end 
+% end 
 end

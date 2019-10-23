@@ -18,6 +18,32 @@ function [F_motor,M_motor,rpm_motor_dot] = motor_model(F,M,motor_rpm,params)
 %
 %************ MOTOR MODEL ************************
 
-% Write code here
+% Write code hereM
+rpm_min = params.rpm_min;
+rpm_max = params.rpm_max;
+km = params.motor_constant;
+ct = params.thrust_coefficient;
+d = params.arm_length;
+cq = params.moment_scale;
+desired_rpm_squared = inv([ct,ct,ct,ct; 0, d*ct,0,-d*ct;-d*ct,0,d*ct,0;-cq,cq,-cq,cq])*[F;M(1);M(2);M(3)]
+
+
+for i=1:size(desired_rpm_squared,1)
+    if sqrt(desired_rpm_squared(i)) > rpm_max
+        desired_rpm_squared(i) = rpm_max^2;
+    elseif sqrt(desired_rpm_squared(i)) < rpm_min
+        desired_rpm_squared(i) = rpm_min^2;
+    end
+end
+
+
+output = [ct,ct,ct,ct; 0, d*ct,0,-d*ct;-d*ct,0,d*ct,0;-cq,cq,-cq,cq]*desired_rpm_squared;
+
+
+F_motor = output(1);
+M_motor = output(2:4,:);
+
+
+rpm_motor_dot = km *(sqrt(desired_rpm_squared)-motor_rpm)
 
 end
