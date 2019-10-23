@@ -17,6 +17,7 @@ function [waypoints, waypoint_times] = lookup_waypoints(question)
 % Write code here
 
 %Sample waypoints for hover trajectory
+step_size = 0.01;
 if question == 2
    waypoints = [0 0.1 0.2 0.3;
                 0 0 0 0;
@@ -30,15 +31,31 @@ if question == 2
 
 elseif question ==3
     point_num = 100;
-    x_waypoint = zeros(point_num,1);
-    y_waypoint = zeros(point_num,1);
-    z_waypoint = linspace(0,1,point_num)';
-    theta_waypoint = zeros(point_num,1);
+    x_waypoint = zeros(1,point_num);
+    y_waypoint = zeros(1,point_num);
+    z_waypoint = linspace(0,1,point_num);
+    theta_waypoint = zeros(1,point_num);
     
-    waypoints = [x_waypoint,y_waypoint,z_waypoint,theta_waypoint]';
+    waypoints = [x_waypoint;y_waypoint;z_waypoint;theta_waypoint];
+%     size(waypoints)
     waypoint_times = linspace(0,10,point_num);
     
-   
+elseif question == 5
+    take_off_time = 1;
+    hover_time = 2;
+    traj_time = 3;
+    land_time = 2; 
+    point_num = traj_time/step_size;
+    
+    x_waypoint = zeros(1,point_num);
+    y_waypoint = zeros(1,point_num);
+    z_waypoint = ones(1,point_num)*0.1;
+    theta_waypoint = zeros(1,point_num);
+    
+    traj = [x_waypoint;y_waypoint;z_waypoint;theta_waypoint];   
+    [waypoints, waypoint_times] = state_machine(traj,traj_time,take_off_time,hover_time,land_time,step_size);
+    
+  
 end
 end
 

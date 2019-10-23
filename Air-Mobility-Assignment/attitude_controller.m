@@ -45,7 +45,6 @@ R = current_state.rot;
 R_d = desired_state.rot;
 eR = R - R_d;
 eW = current_state.omega- R'*R_d*desired_state.omega;
-
 M = I*(-Kp.*eR - Kd.*eW);
 
 
