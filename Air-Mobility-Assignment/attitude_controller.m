@@ -35,6 +35,7 @@ function [M] = attitude_controller(current_state,desired_state,params,question)
 % 
 % Kppsi = 80;
 % Kdpsi = 17.88;
+I = params.inertia;
 
 Kp = [190;198;80];
 Kd = [30;30;17.88];
@@ -45,7 +46,7 @@ R_d = desired_state.rot;
 eR = R - R_d;
 eW = current_state.omega- R'*R_d*desired_state.omega;
 
-M = -Kp.*eR - Kd.*eW;
+M = I*(-Kp.*eR - Kd.*eW);
 
 
 end

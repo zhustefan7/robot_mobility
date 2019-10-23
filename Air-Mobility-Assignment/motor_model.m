@@ -44,6 +44,6 @@ F_motor = output(1);
 M_motor = output(2:4,:);
 
 
-rpm_motor_dot = km *(sqrt(desired_rpm_squared)-motor_rpm)
+rpm_motor_dot = km *(sqrt(desired_rpm_squared)-motor_rpm);
 
 end
