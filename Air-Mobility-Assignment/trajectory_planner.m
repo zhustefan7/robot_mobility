@@ -27,7 +27,20 @@ trajectory_state = zeros(15,max_iter);
 
 current_waypoint_number = 1;
 
+
+% if question ==3
+% peak_velocity =1;
+% waypoint_len = size(waypoints,2);
+% ramp_up = linspace(0,peak_velocity,round(waypoint_len/3));
+% flat = ones(1,round(waypoint_len/3))*peak_velocity;
+% ramp_down =linspace(peak_velocity,0,waypoint_len - size(flat,2)-size(ramp_up,2));
+% velocity_profile =[ramp_up,flat,ramp_down];
+% z_acc = cumtrapz(velocity_profile); 
+% end
+
+
 for iter = 1:max_iter
+    
     if (current_waypoint_number<length(waypoint_times))
         if((iter*time_step)>waypoint_times(current_waypoint_number+1))
             current_waypoint_number = current_waypoint_number + 1;
@@ -37,6 +50,13 @@ for iter = 1:max_iter
     trajectory_state(1:3,iter) = waypoints(1:3,current_waypoint_number);
     trajectory_state(9,iter) = waypoints(4,current_waypoint_number);
     
+    if question == 3
+    trajectory_state(6,iter) =  waypoints(5,current_waypoint_number);
+    trajectory_state(15,iter) =  waypoints(6,current_waypoint_number);
+    end
+    
+    
 end
+
 
 end

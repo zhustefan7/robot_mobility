@@ -25,8 +25,10 @@ km = params.motor_constant;
 ct = params.thrust_coefficient;
 d = params.arm_length;
 cq = params.moment_scale;
-desired_rpm_squared = inv([ct,ct,ct,ct; 0, d*ct,0,-d*ct;-d*ct,0,d*ct,0;-cq,cq,-cq,cq])*[F;M(1);M(2);M(3)]
+desired_rpm_squared = inv([ct,ct,ct,ct; 0, d*ct,0,-d*ct;-d*ct,0,d*ct,0;-cq,cq,-cq,cq])*[F;M(1);M(2);M(3)];
 
+
+% 
 
 for i=1:size(desired_rpm_squared,1)
     if sqrt(desired_rpm_squared(i)) > rpm_max

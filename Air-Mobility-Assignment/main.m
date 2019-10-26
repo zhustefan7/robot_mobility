@@ -32,7 +32,7 @@ params = struct(...
     'rpm_min',             3000, ...
     'rpm_max',            20000, ...
     'inertia',            diag([0.0033 0.0033 0.005]),...
-    ' ',                0.05);
+    'COM_vertical_offset',                0.05);
 
 %% Get the waypoints for this specific question
 
@@ -69,7 +69,7 @@ state(9) =   waypoints(4,1); %psi
 state(10) =  0;         %phidot 
 state(11) =  0;         %thetadot
 state(12) =  0;         %psidot
-state(13:16) =  0;      %rpm
+state(13:16) =  0;%[1.52958*10^4;1.52958*10^4;1.52958*10^4;1.52958*10^4];      %rpm
 
 %% Create a trajectory consisting of desired state at each time step
 
@@ -122,9 +122,8 @@ for iter = 1:max_iter-1
     % Get the change in state from the quadrotor dynamics
     timeint = time_vec(iter:iter+1);
     [tsave, xsave] = ode45(@(t,s) dynamics(params, s, F_actual, M_actual, rpm_motor_dot), timeint, state);
-    state    = xsave(end, :)';
+    state = xsave(end, :)';
     acc  = (xsave(end,4:6)' - xsave(end-1,4:6)')/(tsave(end) - tsave(end-1));
-
     % Update desired state matrix
     actual_desired_state_matrix(1:3,iter+1) =  desired_state.pos;
     actual_desired_state_matrix(4:6, iter+1) = desired_state.vel;
