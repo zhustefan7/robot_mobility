@@ -69,7 +69,7 @@ state(9) =   waypoints(4,1); %psi
 state(10) =  0;         %phidot 
 state(11) =  0;         %thetadot
 state(12) =  0;         %psidot
-state(13:16) =  0;%[1.52958*10^4;1.52958*10^4;1.52958*10^4;1.52958*10^4];      %rpm
+state(13:16) = [1.52958*10^4;1.52958*10^4;1.52958*10^4;1.52958*10^4];      %rpm
 
 %% Create a trajectory consisting of desired state at each time step
 
@@ -134,6 +134,8 @@ for iter = 1:max_iter-1
     % Update actual state matrix
     actual_state_matrix(1:12, iter+1) = state(1:12);
     actual_state_matrix(13:15, iter+1) = acc;  
+    
+%     [rise_time, setting_time] = analyze_step_response(actual_state_matrix)
 end
 
 plot_quadrotor_errors(actual_state_matrix, actual_desired_state_matrix, time_vec)

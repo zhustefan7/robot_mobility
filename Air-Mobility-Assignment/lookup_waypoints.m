@@ -17,7 +17,7 @@ function [waypoints, waypoint_times] = lookup_waypoints(question)
 % Write code here
 
 %Sample waypoints for hover trajectory
-step_size = 0.01;
+step_size = 0.005;
 if question == 2
    waypoints = [0 0.1 0.2 0.3;
                 0 0 0 0;
@@ -34,20 +34,22 @@ elseif question ==3
     point_num = total_time/step_size;
     waypoint_times = linspace(0,10,point_num);
     
-    syms a(t)
-    a(t) = piecewise(t<0, 0,t>=0 & t<2, 1, t>=2 & t<10,0);
+    syms a(t) v(t)
+
+    a(t) = piecewise(t<0, 0,t>=0 & t<2, 0.25, t>=2 & t<4,-0.25,t>=4,0);
     v(t) = int(a(t),0,t);
     z(t) = int(v(t) ,0,t);
+
     
     vel_waypoint = v(waypoint_times);
     acc_waypoint = a(waypoint_times);
-    vel_waypoint = vel_waypoint - min(vel_waypoint(:));
-    vel_waypoint = vel_waypoint ./ max(vel_waypoint(:));
-    
+%     vel_waypoint = vel_waypoint - min(vel_waypoint(:));
+%     vel_waypoint = vel_waypoint ./ max(vel_waypoint(:));
+%     
     
     z_waypoint = z(waypoint_times);
-    z_waypoint= z_waypoint - min(z_waypoint(:));
-    z_waypoint = z_waypoint ./ max(z_waypoint(:)); 
+%     z_waypoint= z_waypoint - min(z_waypoint(:));
+%     z_waypoint = z_waypoint ./ max(z_waypoint(:)); 
     
 
 %    
@@ -76,13 +78,33 @@ elseif question == 5
     
     %5.2
     theta_waypoint = 0.261799*ones(1,point_num);
+    
     x_waypoint = zeros(1,point_num);
     y_waypoint = zeros(1,point_num);
     z_waypoint = ones(1,point_num)*0.1;
     traj = [x_waypoint;y_waypoint;z_waypoint;theta_waypoint];   
     [waypoints, waypoint_times] = state_machine(traj,traj_time,take_off_time,hover_time,land_time,step_size);
     
-   
+elseif question ==7
+    take_off_time = 1;
+    hover_time = 2;
+    traj_time = 7;
+    land_time = 2; 
+    point_num = traj_time/step_size;
+    x_waypoint = zeros(1,point_num);
+    y_waypoint = zeros(1,point_num);
+    z_waypoint = linspace(1,10,point_num);
+    theta_waypoint = zeros(1,point_num);
+    traj = [x_waypoint;y_waypoint;z_waypoint;theta_waypoint];   
+    [waypoints, waypoint_times] = state_machine(traj,traj_time,take_off_time,hover_time,land_time,step_size);
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     
@@ -120,9 +142,10 @@ elseif question == 9
     y_dot = a*cos(t);
     
     initial_heading = atan2(y_dot, x_dot);
+    size(initial_heading)
     for i=1 : size(initial_heading,2)
         if initial_heading(i) < 0 
-            initial_heading(i)= initial_heading(i)+ pi
+            initial_heading(i)= initial_heading(i)+ 2*pi
         end
     end
     

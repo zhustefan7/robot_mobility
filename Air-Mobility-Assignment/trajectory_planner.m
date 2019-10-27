@@ -53,10 +53,13 @@ for iter = 1:max_iter
     if question == 3
     trajectory_state(6,iter) =  waypoints(5,current_waypoint_number);
     trajectory_state(15,iter) =  waypoints(6,current_waypoint_number);
-    end
     
     
+%     elseif question ==8
+        
+        
+   
+        
+    end  
 end
-
-
 end

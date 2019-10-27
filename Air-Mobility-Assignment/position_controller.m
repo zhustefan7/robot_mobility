@@ -44,7 +44,9 @@ m = params.mass;
 g = params.gravity;
 b = [0,0,1]; 
 
-Kp = [13;17;20];
+% Kp = [13;17;20];
+
+Kp = [26;34;40];
 Kd = [6.6;6.6;9];
 
 % Write code here
