@@ -46,30 +46,65 @@ b = [0,0,1];
 
 % Kp = [13;17;20];
 
+
+
+% Write code here
+if question ~=6
 Kp = [26;34;40];
 Kd = [6.6;6.6;9];
 
-% Write code here
-% if question ==2
 pos_error = current_state.pos - desired_state.pos;
 vel_error = current_state.vel - desired_state.vel;
 
 e_ddot = -Kp.*pos_error - Kd.*vel_error;
 
-
-% ex_ddot = - Kp1*pos_error(1)-Kd1*vel_error(1);
-% ey_ddot = - Kp1*pos_error(2)-Kd1*vel_error(2);
-% ez_ddot = -pos_error(3) - vel_error(3);
-% 
-
 F = m*(g+desired_state.acc(3)+e_ddot(3));
 
 acc = desired_state.acc + e_ddot;
 
+elseif question ==6
+m = params.mass;
+J = params.inertia;
+J11 = J(1,1);
+J22 = J(2,2);
+J33 = J(3,3);
+psi = current_state.rot(3);
+psi_d = desired_state.omega(3);
 
-% acc = [desired_state.acc(1)+ex_ddot,
-%        desired_state.acc(2)+ey_ddot,
-%        desired_state.acc(3)+ez_ddot]
 
-% end 
+
+
+A = [0,0,0,0,0,0,1,0,0,0,0,0;
+     0,0,0,0,0,0,0,1,0,0,0,0;
+     0,0,0,0,0,0,0,0,1,0,0,0;
+     0,0,0,0,0,0,0,0,0,1,0,0;
+     0,0,0,0,0,0,0,0,0,0,1,0;
+     0,0,0,0,0,0,0,0,0,0,0,1;
+     0,0,0,g*sin(psi),g*cos(psi),0,0,0,0,0,0,0;
+     0,0,0,-g*cos(psi),g*sin(psi),0,0,0,0,0,0,0;
+     0,0,0,0,0,0,0,0,0,0,0,0;
+     0,0,0,(J22-J33)*psi_d^2/J11,0,0,0,0,0,0,(J22-J33)*psi_d/J11,0;
+     0,0,0,0,(J11-J33)*psi_d^2/J22,0,0,0,0,-(J11-J33)*psi_d/J22,0,0;
+     0,0,0,0,0,0,0,0,0,0,0,0;
+     ];
+
+B = [0,0,0,0;
+     0,0,0,0;
+     0,0,0,0;
+     0,0,0,0;
+     0,0,0,0;
+     0,0,0,0;
+     0,0,0,0;
+     0,0,0,0;
+     1/m,0,0,0;
+     0,1/J11,0,0;
+     0,0,1/J22,0;
+     0,0,0,1/J33;];
+ 
+ Q = 0.1 * eye(12);
+ R = 2*eye(4);
+ 
+K = lqr(A,B, Q,R);
+    
+end
 end
