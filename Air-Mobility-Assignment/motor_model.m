@@ -39,8 +39,8 @@ for i=1:size(desired_rpm_squared,1)
 end
 
 
-output = [ct,ct,ct,ct; 0, d*ct,0,-d*ct;-d*ct,0,d*ct,0;-cq,cq,-cq,cq]*desired_rpm_squared;
-% output = [ct,ct,ct,ct; 0, d*ct,0,-d*ct;-d*ct,0,d*ct,0;-cq,cq,-cq,cq]*motor_rpm.^2;
+% output = [ct,ct,ct,ct; 0, d*ct,0,-d*ct;-d*ct,0,d*ct,0;-cq,cq,-cq,cq]*desired_rpm_squared;
+output = [ct,ct,ct,ct; 0, d*ct,0,-d*ct;-d*ct,0,d*ct,0;-cq,cq,-cq,cq]*motor_rpm.^2;
 
 
 F_motor = output(1);

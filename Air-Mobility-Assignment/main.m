@@ -139,6 +139,7 @@ for iter = 1:max_iter-1
 end
 
 plot_quadrotor_errors(actual_state_matrix, actual_desired_state_matrix, time_vec)
+% plot_quadrotor_errors(actual_state_matrix(:,200:1436), actual_desired_state_matrix(:,200:1436), time_vec(:,200:1436))
 
 end
 
