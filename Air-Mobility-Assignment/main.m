@@ -14,7 +14,8 @@
 % Version: this framework was made using MATLAB R2018b. Should function
 % as expected with most recent versions of MATLAB.
 
-function [] = main(question)
+function [] = main(question,control_type)
+%control type 1: PD 2:LQR
 
 clc
 close all;
@@ -107,14 +108,22 @@ for iter = 1:max_iter-1
     desired_state.omega = trajectory_matrix(10:12,iter);
     desired_state.acc = trajectory_matrix(13:15,iter);
     
+    
+    if control_type == 1
     % Get desired acceleration from position controller
-    [F, desired_state.acc] = position_controller(current_state, desired_state, params, question);
+    [F, desired_state.acc]  = position_controller(current_state, desired_state, params, question);
 
     % Computes desired pitch and roll angles
     [desired_state.rot, desired_state.omega] = attitude_planner(desired_state, params);
-
+    
     % Get torques from attitude controller
     M = attitude_controller(current_state, desired_state, params, question);
+    
+    elseif control_type == 2
+    [F, M] = lqr_controller(current_state, desired_state, params, question)
+     
+    end
+    
 
     % Motor model
     [F_actual, M_actual, rpm_motor_dot] = motor_model(F, M, current_state.rpm, params);
@@ -139,7 +148,7 @@ for iter = 1:max_iter-1
 end
 
 plot_quadrotor_errors(actual_state_matrix, actual_desired_state_matrix, time_vec)
-% plot_quadrotor_errors(actual_state_matrix(:,200:1436), actual_desired_state_matrix(:,200:1436), time_vec(:,200:1436))
+% plot_quadrotor_errors(actual_state_matrix(:,400:2000), actual_desired_state_matrix(:,400:2000), time_vec(:,400:2000))
 
 end
 
