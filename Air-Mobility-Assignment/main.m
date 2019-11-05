@@ -45,7 +45,7 @@ params = struct(...
 %% Set the simualation parameters
 
 time_initial = 0; 
-time_final = 10;
+time_final = 40;
 time_step = 0.005; % sec
 % 0.005 sec is a reasonable time step for this system
 
@@ -147,8 +147,9 @@ for iter = 1:max_iter-1
 %     [rise_time, setting_time] = analyze_step_response(actual_state_matrix)
 end
 
-plot_quadrotor_errors(actual_state_matrix, actual_desired_state_matrix, time_vec)
-% plot_quadrotor_errors(actual_state_matrix(:,400:2000), actual_desired_state_matrix(:,400:2000), time_vec(:,400:2000))
+% plot_quadrotor_errors(actual_state_matrix, actual_desired_state_matrix, time_vec)
+% plot_quadrotor_errors(actual_state_matrix(:,600:1600), actual_desired_state_matrix(:,600:1600), time_vec(:,600:1600))
+plot_cumulative_errors(actual_state_matrix, actual_desired_state_matrix, time_vec)
 
 end
 

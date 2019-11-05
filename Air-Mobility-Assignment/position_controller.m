@@ -50,8 +50,15 @@ b = [0,0,1];
 
 % Write code here
 if question ~=6
-Kp = [13;17;20];
-Kd = [6.6;6.6;9];
+% Kp = [13;17;20];
+% Kd = [6.6;6.6;9];
+Kp = [13;30;20];
+Kd = [6.6;10;9];
+
+% Kp = [25;60;200];
+% Kd = [10;15;100];
+
+
 
 pos_error = current_state.pos - desired_state.pos;
 vel_error = current_state.vel - desired_state.vel;

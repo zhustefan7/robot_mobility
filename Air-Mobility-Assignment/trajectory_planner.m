@@ -59,7 +59,11 @@ for iter = 1:max_iter
     trajectory_state(4,iter) =  waypoints(5,current_waypoint_number);
     trajectory_state(5,iter) =  waypoints(6,current_waypoint_number);
     
-    elseif question ==9
+    elseif question ==8.5
+    trajectory_state(4,iter) =  waypoints(5,current_waypoint_number);
+    trajectory_state(5,iter) =  waypoints(6,current_waypoint_number);
+    
+    elseif question ==9 | 9.5
     trajectory_state(4,iter) =  waypoints(5,current_waypoint_number);
     trajectory_state(5,iter) =  waypoints(6,current_waypoint_number);
         
