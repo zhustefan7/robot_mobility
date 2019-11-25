@@ -54,12 +54,4 @@ state_dot(12) = alpha(3);
 state_dot(13:16) = rpm_motor_dot;
 
 
-
-
-
-
-
-
-
-
 end

@@ -21,11 +21,11 @@ function [F, acc] = position_controller(current_state, desired_state, params, qu
 %   question: Question number
 %
 % Output parameters
-%
+% 
 %   F: u1 or thrust
 %
 %   acc: will be stored as desired_state.acc = [xdotdot; ydotdot; zdotdot]
-%
+
 %************  POSITION CONTROLLER ************************
 
 % Example PD gains
@@ -50,8 +50,15 @@ b = [0,0,1];
 
 % Write code here
 if question ~=6
-Kp = [26;34;40];
-Kd = [6.6;6.6;9];
+% Kp = [13;17;20];
+% Kd = [6.6;6.6;9];
+Kp = [13;30;20];
+Kd = [6.6;10;9];
+
+% Kp = [25;60;200];
+% Kd = [10;15;100];
+
+
 
 pos_error = current_state.pos - desired_state.pos;
 vel_error = current_state.vel - desired_state.vel;
@@ -62,49 +69,8 @@ F = m*(g+desired_state.acc(3)+e_ddot(3));
 
 acc = desired_state.acc + e_ddot;
 
-elseif question ==6
-m = params.mass;
-J = params.inertia;
-J11 = J(1,1);
-J22 = J(2,2);
-J33 = J(3,3);
-psi = current_state.rot(3);
-psi_d = desired_state.omega(3);
 
 
-
-
-A = [0,0,0,0,0,0,1,0,0,0,0,0;
-     0,0,0,0,0,0,0,1,0,0,0,0;
-     0,0,0,0,0,0,0,0,1,0,0,0;
-     0,0,0,0,0,0,0,0,0,1,0,0;
-     0,0,0,0,0,0,0,0,0,0,1,0;
-     0,0,0,0,0,0,0,0,0,0,0,1;
-     0,0,0,g*sin(psi),g*cos(psi),0,0,0,0,0,0,0;
-     0,0,0,-g*cos(psi),g*sin(psi),0,0,0,0,0,0,0;
-     0,0,0,0,0,0,0,0,0,0,0,0;
-     0,0,0,(J22-J33)*psi_d^2/J11,0,0,0,0,0,0,(J22-J33)*psi_d/J11,0;
-     0,0,0,0,(J11-J33)*psi_d^2/J22,0,0,0,0,-(J11-J33)*psi_d/J22,0,0;
-     0,0,0,0,0,0,0,0,0,0,0,0;
-     ];
-
-B = [0,0,0,0;
-     0,0,0,0;
-     0,0,0,0;
-     0,0,0,0;
-     0,0,0,0;
-     0,0,0,0;
-     0,0,0,0;
-     0,0,0,0;
-     1/m,0,0,0;
-     0,1/J11,0,0;
-     0,0,1/J22,0;
-     0,0,0,1/J33;];
- 
- Q = 0.1 * eye(12);
- R = 2*eye(4);
- 
-K = lqr(A,B, Q,R);
     
 end
 end

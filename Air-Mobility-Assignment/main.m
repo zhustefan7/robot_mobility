@@ -14,7 +14,8 @@
 % Version: this framework was made using MATLAB R2018b. Should function
 % as expected with most recent versions of MATLAB.
 
-function [] = main(question)
+function [] = main(question,control_type)
+%control type 1: PD 2:LQR
 
 clc
 close all;
@@ -44,7 +45,7 @@ params = struct(...
 %% Set the simualation parameters
 
 time_initial = 0; 
-time_final = 10;
+time_final = 40;
 time_step = 0.005; % sec
 % 0.005 sec is a reasonable time step for this system
 
@@ -107,14 +108,22 @@ for iter = 1:max_iter-1
     desired_state.omega = trajectory_matrix(10:12,iter);
     desired_state.acc = trajectory_matrix(13:15,iter);
     
+    
+    if control_type == 1
     % Get desired acceleration from position controller
-    [F, desired_state.acc] = position_controller(current_state, desired_state, params, question);
+    [F, desired_state.acc]  = position_controller(current_state, desired_state, params, question);
 
     % Computes desired pitch and roll angles
     [desired_state.rot, desired_state.omega] = attitude_planner(desired_state, params);
-
+    
     % Get torques from attitude controller
     M = attitude_controller(current_state, desired_state, params, question);
+    
+    elseif control_type == 2
+    [F, M] = lqr_controller(current_state, desired_state, params, question)
+     
+    end
+    
 
     % Motor model
     [F_actual, M_actual, rpm_motor_dot] = motor_model(F, M, current_state.rpm, params);
@@ -138,8 +147,9 @@ for iter = 1:max_iter-1
 %     [rise_time, setting_time] = analyze_step_response(actual_state_matrix)
 end
 
-plot_quadrotor_errors(actual_state_matrix, actual_desired_state_matrix, time_vec)
-% plot_quadrotor_errors(actual_state_matrix(:,200:1436), actual_desired_state_matrix(:,200:1436), time_vec(:,200:1436))
+% plot_quadrotor_errors(actual_state_matrix, actual_desired_state_matrix, time_vec)
+% plot_quadrotor_errors(actual_state_matrix(:,600:1600), actual_desired_state_matrix(:,600:1600), time_vec(:,600:1600))
+plot_cumulative_errors(actual_state_matrix, actual_desired_state_matrix, time_vec)
 
 end
 

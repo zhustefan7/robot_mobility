@@ -18,7 +18,7 @@ function [waypoints, waypoint_times] = lookup_waypoints(question)
 
 %Sample waypoints for hover trajectory
 step_size = 0.005;
-if question == 2
+if question == 2 
    waypoints = [0 0.1 0.2 0.3;
                 0 0 0 0;
                 0.5 0.5 0.5 0.5; 
@@ -67,9 +67,9 @@ elseif question ==3
      
     
 elseif question == 5
-    take_off_time = 1;
-    hover_time = 2;
-    traj_time = 3;
+    take_off_time = 0;
+    hover_time = 0;
+    traj_time = 10;
     land_time = 2; 
     point_num = traj_time/step_size;
     
@@ -77,18 +77,18 @@ elseif question == 5
 %     theta_waypoint = zeros(1,point_num);
     
     %5.2
-    theta_waypoint = 0.261799*ones(1,point_num);
+    theta_waypoint = [zeros(1,400),0.261799*ones(1,1600)];
     
     x_waypoint = zeros(1,point_num);
     y_waypoint = zeros(1,point_num);
-    z_waypoint = ones(1,point_num)*0.1;
+    z_waypoint = [zeros(1,400),ones(1,1600)*0.1];
     traj = [x_waypoint;y_waypoint;z_waypoint;theta_waypoint];   
     [waypoints, waypoint_times] = state_machine(traj,traj_time,take_off_time,hover_time,land_time,step_size);
     
 elseif question ==7
     take_off_time = 1;
-    hover_time = 0;
-    traj_time = 4;
+    hover_time = 2;
+    traj_time = 5;
     land_time = 2; 
     point_num = traj_time/step_size;
     x_waypoint = zeros(1,point_num);
@@ -126,36 +126,152 @@ elseif question == 8
     [waypoints, waypoint_times] = state_machine(traj,traj_time,take_off_time,hover_time,land_time,step_size);
     
     %part 1
-%     x_dot = linspace(0,1,point_num);
-% %     y_dot = b/sqrt(a^2+b^2)*sin(t);
-%     x_waypoints = zeros(1,size(waypoints,2));
-%     y_waypoints = zeros(1,size(waypoints,2));
-%     x_waypoints(1, (take_off_time+hover_time)/step_size+1:(take_off_time+hover_time+traj_time)/step_size) = x_dot;
-% %     y_waypoints(1, (take_off_time+hover_time)/step_size+1:(take_off_time+hover_time+traj_time)/step_size) = y_dot;
-%     waypoints = [waypoints;x_waypoints;y_waypoints];
-%     
+    x_dot = linspace(0,1,point_num);
+%     y_dot = b/sqrt(a^2+b^2)*sin(t);
+    x_vel_waypoints = zeros(1,size(waypoints,2));
+    y_vel_waypoints = zeros(1,size(waypoints,2));
+    x_vel_waypoints(1, (take_off_time+hover_time)/step_size+1:(take_off_time+hover_time+traj_time)/step_size) = x_dot;
+%     y_waypoints(1, (take_off_time+hover_time)/step_size+1:(take_off_time+hover_time+traj_time)/step_size) = y_dot;
+    waypoints = [waypoints;x_vel_waypoints;y_vel_waypoints];
+    
     
     %part 2
-    x_dot = a/sqrt(a^2+b^2)*cos(t);
-    y_dot = b/sqrt(a^2+b^2)*sin(t);
+%     x_dot = a/sqrt(a^2+b^2)*cos(t);
+%     y_dot = b/sqrt(a^2+b^2)*sin(t);
+%     
+% %     x_dot(1,1256:1884) = -x_dot(1,1:629);
+% %     y_dot(1,1256:1884) = -y_dot(1,1:629);
+%     
+%     
+%     x_dot_waypoints = zeros(1,size(waypoints,2));
+%     y_dot_waypoints = zeros(1,size(waypoints,2));
+%     x_dot_waypoints(1, (take_off_time+hover_time)/step_size+1:(take_off_time+hover_time+traj_time)/step_size) = x_dot;
+%     y_dot_waypoints(1, (take_off_time+hover_time)/step_size+1:(take_off_time+hover_time+traj_time)/step_size) = y_dot;
+%     waypoints = [waypoints;x_dot_waypoints;y_dot_waypoints];
+%     
+
+elseif question == 8.5
+a = 2; 
+b= 1;
+time_step = 0.005;
+take_off_time = 0.5;
+hover_time = 0;
+traj_time = 10;
+land_time = 2; 
+point_num = traj_time/step_size;
+
+
+t1 = 0:time_step:2.5;
+t2 = 2.5:time_step:5;
+t3 = 5:time_step:7.5;
+t4 = 7.5:time_step:10;
+
+blah = spline([0 2.5],[0 0 1 1]);
+
+first_quadrant = ppval(blah,t1);
+second_quadrant = 2-flip(first_quadrant(:,2:end));
+third_quadrant = flip(second_quadrant(:,2:end));
+fourth_quadrant = flip(first_quadrant(:,2:end));
+y1 = [first_quadrant,second_quadrant];
+y2= [third_quadrant,fourth_quadrant];
+x1 = sqrt((1-(y1-1).^2/b)* a^2);
+x2 = -sqrt((1-(y2-1).^2/b)* a^2);
+
+x_waypoint =[x1,x2];
+y_waypoint = [y1 ,y2];
+x_dot = gradient(x_waypoint)/time_step;
+y_dot = gradient(y_waypoint)/time_step;
+
+z_waypoint = ones(1,point_num)*1;
+theta_waypoint = zeros(1,point_num);
+% size(x_waypoint)
+% size(z_waypoint)
+traj = [x_waypoint;y_waypoint;z_waypoint;theta_waypoint];
+
+%multiplication 
+x_dot = [x_dot,x_dot,x_dot,x_dot];
+y_dot = [y_dot,y_dot,y_dot,y_dot];
+traj = [traj,traj,traj,traj];
+traj_time = traj_time*4;
+[waypoints, waypoint_times] = state_machine(traj,traj_time,take_off_time,hover_time,land_time,step_size);
+
+x_vel_waypoints = zeros(1,size(waypoints,2));
+y_vel_waypoints = zeros(1,size(waypoints,2));
+x_vel_waypoints(1, (take_off_time+hover_time)/step_size+1:(take_off_time+hover_time+traj_time)/step_size) = x_dot;
+y_vel_waypoints(1, (take_off_time+hover_time)/step_size+1:(take_off_time+hover_time+traj_time)/step_size) = y_dot;
+waypoints = [waypoints;x_vel_waypoints;y_vel_waypoints];
+
+
+elseif question ==9.5
+a = 2; 
+b= 1;
+time_step = 0.005;
+take_off_time = 0.5;
+hover_time = 0;
+traj_time = 10;
+land_time = 2; 
+point_num = traj_time/step_size;
+
+
+t1 = 0:time_step:2.5;
+t2 = 2.5:time_step:5;
+t3 = 5:time_step:7.5;
+t4 = 7.5:time_step:10;
+
+blah = spline([0 2.5],[0 0 1 1]);
+
+first_quadrant = ppval(blah,t1);
+second_quadrant = 2-flip(first_quadrant(:,2:end));
+third_quadrant = flip(second_quadrant(:,2:end));
+fourth_quadrant = flip(first_quadrant(:,2:end));
+y1 = [first_quadrant,second_quadrant];
+y2= [third_quadrant,fourth_quadrant];
+x1 = sqrt((1-(y1-1).^2/b)* a^2);
+x2 = -sqrt((1-(y2-1).^2/b)* a^2);
+
+x_waypoint =[x1,x2];
+y_waypoint = [y1 ,y2];
+x_dot = gradient(x_waypoint)/time_step;
+y_dot = gradient(y_waypoint)/time_step;
+
+z_waypoint = ones(1,point_num)*1;
+
+initial_heading = atan2(y_dot, x_dot);
+for i=1 : size(initial_heading,2)
+    if initial_heading(i) < 0 
+        initial_heading(i)= initial_heading(i)+ 2*pi;
+    end
+end
+
+theta_waypoint = initial_heading + pi/2;
+
+traj = [x_waypoint;y_waypoint;z_waypoint;];
+
+%multiplication 
+x_dot = [x_dot,x_dot,x_dot,x_dot];
+y_dot = [y_dot,y_dot,y_dot,y_dot];
+theta_waypoint = [theta_waypoint,theta_waypoint+2*pi,theta_waypoint+4*pi,theta_waypoint+6*pi];
+traj = [traj,traj,traj,traj];
+traj = [traj;theta_waypoint];
+traj_time = traj_time*4;
+[waypoints, waypoint_times] = state_machine(traj,traj_time,take_off_time,hover_time,land_time,step_size);
+
+x_vel_waypoints = zeros(1,size(waypoints,2));
+y_vel_waypoints = zeros(1,size(waypoints,2));
+x_vel_waypoints(1, (take_off_time+hover_time)/step_size+1:(take_off_time+hover_time+traj_time)/step_size) = x_dot;
+y_vel_waypoints(1, (take_off_time+hover_time)/step_size+1:(take_off_time+hover_time+traj_time)/step_size) = y_dot;
+waypoints = [waypoints;x_vel_waypoints;y_vel_waypoints];
+
     
-%     x_dot(1,1256:1884) = -x_dot(1,1:629);
-%     y_dot(1,1256:1884) = -y_dot(1,1:629);
-    
-    
-    x_dot_waypoints = zeros(1,size(waypoints,2));
-    y_dot_waypoints = zeros(1,size(waypoints,2));
-    x_dot_waypoints(1, (take_off_time+hover_time)/step_size+1:(take_off_time+hover_time+traj_time)/step_size) = x_dot;
-    y_dot_waypoints(1, (take_off_time+hover_time)/step_size+1:(take_off_time+hover_time+traj_time)/step_size) = y_dot;
-    waypoints = [waypoints;x_dot_waypoints;y_dot_waypoints];
-    
+
+
     
 elseif question == 9
     a = 2; 
     b= 2;
-    take_off_time = 1;
-    hover_time = 0;
-    traj_time = 6.18;
+    take_off_time = 0.5;
+    hover_time = 0.5;
+    traj_time =  9.42;
     land_time = 2; 
     point_num = traj_time/step_size;
     t = linspace(0,traj_time,point_num);
