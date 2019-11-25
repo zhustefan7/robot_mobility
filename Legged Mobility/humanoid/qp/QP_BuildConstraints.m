@@ -70,7 +70,7 @@ QP.beq = [           -QP.Dyn.h; ...
 %     [-1 -mu]*[fX Fy]' <= 0, is implemented as inequality
 %     constraint on [ddq tau F]'
  
-miu = 0.1;
+miu = 0.01;
 
 
  QP.Aineq = [zeros(1,10),-1,-miu;
